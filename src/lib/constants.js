@@ -1,15 +1,24 @@
 import invariant from 'invariant';
 
+/*
+ * Default api states
+ */
 export const apiStates = ['loading', 'success', 'error'];
 
+/*
+ * apiKeys to fetch the api key type
+ */
 export function apiKeys(name, states = apiStates) {
   return states.map((state) => `${name}_${state}`.toUpperCase())
 }
 
 const toApiKey = (key) => `api_${key}`.toUpperCase();
 
-export function apiValues(name) {
-  return apiKeys(name)
+/*
+ * get the api values
+ */
+export function apiValues(name, states = apiStates) {
+  return apiKeys(name, states)
     .reduce((sum, key) => ({
       ...sum,
       [key]: toApiKey(key)
