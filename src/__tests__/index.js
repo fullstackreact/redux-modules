@@ -6,8 +6,8 @@ import sinon from 'sinon';
 
 import core from '../'
 
-describe('exports', () => {
-    it('exports an createConstants()', () => {
+describe('index', () => {
+    it('exports a createConstants() function', () => {
         expect(core.createConstants).to.be.defined;
     })
 })

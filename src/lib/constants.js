@@ -73,7 +73,6 @@ export function createConstants(opts) {
       return obj;
     };
   };
-
   let initialObject = opts.initialObject || {};
   let prefix = opts.prefix || '';
   return definer(initialObject, prefix);

@@ -46,6 +46,7 @@
     "eslint": "^2.7.0",
     "eslint-plugin-babel": "^3.1.0",
     "eslint-plugin-react": "^4.2.3",
+    "fetch-mock": "^4.5.0",
     "file-loader": "^0.8.5",
     "highlight.js": "^9.3.0",
     "hjs-webpack": "^8.1.0",
@@ -62,6 +63,8 @@
     "react-dom": "^15.0.0",
     "react-github-fork-ribbon": "^0.4.3",
     "react-router": "^2.4.0",
+    "redux-mock-store": "^1.0.3",
+    "redux-thunk": "^2.1.0",
     "sinon": "^1.17.3",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
@@ -71,5 +74,10 @@
     "react": "~0.14.8 || ^15.0.0",
     "react-dom": "~0.14.8 || ^15.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "isomorphic-fetch": "^2.2.1",
+    "redux": "^3.5.2",
+    "redux-actions": "^0.9.1",
+    "whatwg-fetch": "^1.0.0"
+  }
 }
