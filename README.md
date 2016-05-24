@@ -16,7 +16,29 @@ A redux module enables us to build our redux modules in a simple manner. A redux
  * with the hash of CREATE, DELETE, MARK_DONE constants
  **/
 const types = createConstants('TODO')( 'CREATE', 'DELETE', 'MARK_DONE');
+
+/**
+ * The root reducer that handles only create
+ **/
+const reducer = createReducer({
+  [types.CREATE]: (state, {payload}) => ({
+    ...state,
+    todos: state.todos.concat(payload)
+  })
+})
+
+/**
+ * Actions
+ **/
+const actions = createActions({
+  createTodo: (text) => (dispatch) => dispatch({
+    type: types.CREATE,
+    payload: {text: text, done: false}
+  })
+})
 ```
+
+In our app, our entire todo handler, reducer, and actions are all in one place in a single file. Incorporating the handler, reducer, and actions in our redux app is up to you. See [Usage in Redux](#usage-with-redux) for information.
 
 ## Example
 
@@ -97,5 +119,7 @@ To handle custom loading states, we can "hook" into them with a second argument:
 }))
 handleFetchAll: (state, {payload}) => {...state, ...payload}
 ```
+
+## Usage with redux
 
 ## Combining usage with `ducks-modular-redux`
