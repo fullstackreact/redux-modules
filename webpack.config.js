@@ -34,14 +34,6 @@ var config = getConfig({
       }
       cb(null, {
         'index.html': context.defaultTemplate(),
-        // 'readme.html': context.defaultTemplate({
-        //   html: `<div id="readme">
-        //           ${marked(data.toString('utf-8'))}
-        //         </div>`,
-        //   metaTags: {
-        //     bootApp: false
-        //   }
-        // })
       })
     })
   }

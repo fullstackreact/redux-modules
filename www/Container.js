@@ -28,7 +28,7 @@ export const Container = React.createClass({
 
     return (
       <div className={styles.container}>
-        <GitHubForkRibbon href="//github.com/fullstackreact/google-maps-react"
+        <GitHubForkRibbon href="//github.com/fullstackreact/redux-modules"
                   target="_blank"
                   position="right">
           Fork me on GitHub
@@ -37,7 +37,7 @@ export const Container = React.createClass({
           <div className={styles.content}>
             <div className={styles.header}>
               <h1>Redux modules</h1>
-              <h2><a href="https://github.com/fullstackreact/google-maps-react/blob/master/README.md">Readme</a></h2>
+              <h2><a href="https://github.com/fullstackreact/redux-modules/blob/master/README.md">Readme</a></h2>
             </div>
             <Readme {...this.props} />
           </div>

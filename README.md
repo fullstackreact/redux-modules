@@ -121,7 +121,7 @@ To add handlers, we only need to define the key and value function.
 
 ## API handling
 
-The power of `redux-modules` really comes into play when dealing with async code. The common pattern of handling async API calls, which generates multiple states. 
+The power of `redux-modules` really comes into play when dealing with async code. The common pattern of handling async API calls, which generates multiple states. Notice in our above example we can mark types as `api`
 
 The first requirement is to require a middleware (similar to the `react-redux-routing` library) to provide common api configuration settings.
 

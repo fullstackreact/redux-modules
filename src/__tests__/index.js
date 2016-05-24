@@ -4,7 +4,7 @@ import {
 } from 'chai';
 import sinon from 'sinon';
 
-import core from '../'
+import {createConstants} from '../'
 
 describe('index', () => {
     it('exports a createConstants() function', () => {

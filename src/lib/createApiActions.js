@@ -36,17 +36,17 @@
  ************************************************/
 import {createAction} from 'redux-actions';
 import ApiClient from './apiClient';
-import {apiStates, getApiTypes, toApiKey} from './utils';
+import {apiStates, getApiTypes, toApiKey, noop} from './utils';
 
 export const API_CONSTANTS = {
   401: 'API_ERROR_FOUR_OH_ONE',
   // 422: 'API_ERROR_UNPROCESSABLE',
 }
 
-const getActionTypesForKeys = (type, actionCreator = noop, metaCreator) => getApiTypes(type)
+const getActionTypesForKeys = (type, actionCreator = noop, metaCreator = noop) => getApiTypes(type)
   .reduce((memo, key, idx) => ({
     ...memo,
-    [apiStates[idx]]: createAction(toApiKey(key), actionCreator, metaCreator),
+    [apiStates[idx]]: createAction(toApiKey(key), actionCreator, (...args) => ({isApi: true, ...metaCreator(args)}))
   }), {});
 
 // Define a decorator for a function defined in an object
@@ -62,7 +62,7 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
   // from ES5 syntax, i.e.
   //    Object.defineProperty(this, 'fetchAll', {configurable: false, value: 2})
   // and it manipulates the definition by changing the value to be a function
-  // that wraps the different api states, aka LOADING, SUCCESS< ERROR
+  // that wraps the different api states, aka LOADING, SUCCESS, ERROR
   return function decoration(target) {
     // ApiTypes is the string constants mapped to a
     // createdAction (using `createAction`)
@@ -92,10 +92,13 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
           const reduceError = err => dispatch(apiTypes.error({error: errorObj, body: err}));
           if (errorObj && errorObj.status) {
             const apiConstForStatus = API_CONSTANTS[errorObj.status] || getApiTypes(type)[2]
-            dispatch({
+            const action = {
               type: apiConstForStatus,
-              payload: errorObj
-            });
+              payload: errorObj,
+              meta: { isApi: true }
+            };
+            dispatch(action)
+            return action;
           }
           // throw errorObj;
           // return errorObj.body.then(reduceError).catch(reduceError);

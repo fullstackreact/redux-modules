@@ -57,4 +57,32 @@ describe('@api decorator', () => {
     expect(res.length).to.equal(2);
   });
 
+  describe('meta creator', () => {
+    it('appends isApi to the meta object of loading/success', (done) => {
+      generateResponse('/go', 200)
+      let res = decorated(store.dispatch, store.getState);
+      Promise.all(res)
+        .then((arr) => {
+          expect(arr[0].meta.isApi).to.be.true
+          expect(arr[1].meta.isApi).to.be.true
+          done();
+        })
+        .catch(done);
+    });
+
+    it('appends isApi to the meta object of loading/success', (done) => {
+      generateResponse('/go', 418)
+      let res = decorated(store.dispatch, store.getState);
+      Promise.all(res)
+        .then((arr) => {
+          expect(arr[0].meta.isApi).to.be.true
+          expect(arr[1].meta.isApi).to.be.true
+          expect(arr[1].type).to.eql('YES_ERROR')
+          done();
+        })
+        .catch(done);
+    });
+
+  })
+
 });
