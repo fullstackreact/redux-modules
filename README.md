@@ -123,3 +123,24 @@ handleFetchAll: (state, {payload}) => {...state, ...payload}
 ## Usage with redux
 
 ## Combining usage with `ducks-modular-redux`
+
+
+## All exports
+
+The `redux-modules` is comprised by the following exports:
+
+### createConstants
+
+`createConstants()` creates an object to handle creating an object of type constants. It allows for multiple
+
+### createReducer
+
+### apiClient
+
+### createApiMiddleware
+
+### createApiAction/@api
+
+### createApiHandler/@apiHandler
+
+### apiHandler
