@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import {expect} from 'chai';
 import ApiClient from '../../lib/apiClient';
-import {setApi} from '../../lib/createApiActions';
+import {createApiAction} from '../../lib/createApiActions';
 import configureMockStore from 'redux-mock-store';
 import {generateResponse, makeBaseOpts, BASE_URL, makeStore, doDispatch, doGetState} from '../spec_helpers';
 // import 'whatwg-fetch';
@@ -19,7 +19,7 @@ describe('@api decorator', () => {
     store = res.store;
     fn = (client) => client.get('/go')
   });
-  beforeEach(() => decorated = setApi('YES')(fn)(baseOpts))
+  beforeEach(() => decorated = createApiAction('YES')(fn)(baseOpts))
   afterEach(() => fetchMock.restore());
 
   it('calls two actions (LOADING, SUCCESS)', (done) => {

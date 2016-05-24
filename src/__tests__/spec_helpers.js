@@ -3,6 +3,11 @@ import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
 import createApiMiddleware from '../lib/createApiMiddleware';
 
+import chai from 'chai';
+import sinonChai from 'sinon-chai';
+
+chai.use(sinonChai);
+
 export const makeStore = (opts, initialState) => {
   let apiMiddleware = createApiMiddleware(opts);
   let nextHandler = apiMiddleware(store)

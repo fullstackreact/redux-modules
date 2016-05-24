@@ -1,5 +1,18 @@
 import invariant from 'invariant';
 
+export const apiStates = [
+  'loading', 'success', 'error'];
+
+
+
+export const apiKeys = (name) => {
+  return apiStates.map((state) => `${name}_${state}`.toUpperCase());
+}
+
+
+export const toApiKey = (k) => `${k}`.toUpperCase();
+export const getApiTypes = (type) => apiKeys(type).reduce((memo, key) => memo.concat(key), []);
+
 export const noop = (r) => r;
 export const syncEach = (initial, cb) => {
   invariant(initial, 'No initial value defined');

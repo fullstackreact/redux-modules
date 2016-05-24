@@ -36,19 +36,12 @@
  ************************************************/
 import {createAction} from 'redux-actions';
 import ApiClient from './apiClient';
+import {apiStates, getApiTypes, toApiKey} from './utils';
 
 export const API_CONSTANTS = {
   401: 'API_ERROR_FOUR_OH_ONE',
   // 422: 'API_ERROR_UNPROCESSABLE',
 }
-export const apiStates = ['loading', 'success', 'error'];
-
-function apiKeys(name) {
-  return apiStates.map((state) => `${name}_${state}`.toUpperCase());
-}
-
-const toApiKey = (k) => `${k}`.toUpperCase();
-const getApiTypes = (type) => apiKeys(type).reduce((memo, key) => memo.concat(key), []);
 
 const getActionTypesForKeys = (type, actionCreator = noop, metaCreator) => getApiTypes(type)
   .reduce((memo, key, idx) => ({
@@ -59,7 +52,7 @@ const getActionTypesForKeys = (type, actionCreator = noop, metaCreator) => getAp
 // Define a decorator for a function defined in an object
 // that is expected to be an action.
 // @param type - string constant
-export function setApi(type, requestTransforms, responseTransforms, metaCreator) {
+export function createApiAction(type, requestTransforms, responseTransforms, metaCreator) {
   // The decorator function wrapper (design: decoratorFn(fn()))
   // @param target - function to be decorated
   // @param name - the function name
@@ -157,7 +150,7 @@ export function api(type, requestTransforms, responseTransforms, metaCreator) {
   // and it manipulates the definition by changing the value to be a function
   // that wraps the different api states, aka LOADING, SUCCESS< ERROR
   return function decoration(target, name, def) {
-    let newVal = setApi(type, requestTransforms, responseTransforms, metaCreator)(def.initializer);
+    let newVal = createApiAction(type, requestTransforms, responseTransforms, metaCreator)(def.initializer);
     let newDef =  {
       enumerable: true,
       writable: true,
@@ -168,3 +161,5 @@ export function api(type, requestTransforms, responseTransforms, metaCreator) {
     return newDef;
   }
 }
+
+export default api;
