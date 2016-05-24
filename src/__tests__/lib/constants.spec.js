@@ -35,6 +35,11 @@ describe('createConstants', () => {
         })
     })
 
+    describe('with a string opts', () => {
+      const types = createConstants('some_prefix')('CREATE');
+      expect(types.CREATE).to.eql('SOME_PREFIX_CREATE');
+    });
+
 
     describe('without prefix', () => {
         prefixTests(createConstants({})('HARRY'), {

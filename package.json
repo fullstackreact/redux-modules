@@ -84,6 +84,7 @@
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
     "react-github-fork-ribbon": "^0.4.4",
+    "react-inspector": "^1.0.0-beta.2",
     "redux": "^3.5.2",
     "redux-actions": "^0.9.1",
     "whatwg-fetch": "^1.0.0"

@@ -23,19 +23,18 @@ html, body {
   border-bottom: 2px solid color($dominantColor blackness(40%));
 }
 .wrapper {
-  display: flex;
-  flex-direction: row;
-  position: relative;
-  min-height: 100vh;
-
   .content {
-    flex: 1;
-    order: 2;
     position: relative;
     min-height: 100%;
   }
 
+  .demo {
+    border: 1px solid #efefef;
+    padding: 10px;
+  }
+
   .container {
     padding: 15px;
+    margin: 10px 0;
   }
 }

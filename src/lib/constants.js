@@ -28,6 +28,10 @@ export function apiValues(name, states = apiStates) {
 export function createConstants(opts) {
   opts = opts || {};
 
+  if (typeof opts === 'string') {
+    opts = {prefix: opts}
+  }
+
   const defineType = (obj, prefix, n, v) => {
     if (typeof n === 'object') {
       // If it's an API type, decorate with the different
@@ -73,6 +77,7 @@ export function createConstants(opts) {
       return obj;
     };
   };
+
   let initialObject = opts.initialObject || {};
   let prefix = opts.prefix || '';
   return definer(initialObject, prefix);
