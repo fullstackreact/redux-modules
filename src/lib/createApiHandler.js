@@ -102,7 +102,6 @@ export function createApiHandler(type, handlerFn) {
 // @param type - string constant
 // @return function - a nwe decorated function Object.defineProperty
 export function apiHandler(type, handlerFn) {
- // console.log('type in @api ->', type);
  // The decorator function wrapper (design: decoratorFn(fn()))
  // @param target - function to be decorated
  // @param name - the function name
@@ -119,8 +118,6 @@ export function apiHandler(type, handlerFn) {
 
     // Dark and murky overwrite object in place -- possibly the grossest thing ever
     Object.assign(target, handlers);
-
-    console.log('handlers ->', handlers);
 
    let newDef =  {
      enumerable: true,

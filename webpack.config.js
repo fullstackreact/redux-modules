@@ -14,7 +14,7 @@ const path    = require('path'),
 
 const root  = resolve(__dirname);
 const src   = join(root, 'src');
-const examples = join(root, 'examples');
+const examples = join(root, 'www');
 const modules = join(root, 'node_modules');
 const dest  = join(root, 'public');
 
@@ -94,6 +94,11 @@ config.module.loaders.push({
   loader: 'style!css'
 });
 
+config.module.loaders.push({
+  test: /\.md$/,
+  include: [join(root, 'README.md')],
+  loader: 'markdown-with-front-matter'
+})
 
 config.plugins = [
   new webpack.DefinePlugin(defines)

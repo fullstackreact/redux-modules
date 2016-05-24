@@ -129,7 +129,6 @@ describe('ApiClient', () => {
           expect(err.status).to.equal(500);
           done();
         } catch (e) {
-          console.log('error ->', e);
           done(e);
         }
       })

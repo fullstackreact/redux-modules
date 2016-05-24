@@ -1,7 +1,7 @@
 {
-  "name": "google-maps-react",
-  "version": "1.0.13",
-  "description": "Google maps container",
+  "name": "redux-modules",
+  "version": "0.0.1",
+  "description": "Redux modules",
   "author": "Fullstack.io <us@fullstack.io>",
   "license": "MIT",
   "options": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fullstackreact/google-maps-react.git"
+    "url": "https://github.com/fullstackreact/redux-modules.git"
   },
   "main": "dist/index.js",
   "scripts": {
@@ -50,14 +50,20 @@
     "file-loader": "^0.8.5",
     "highlight.js": "^9.3.0",
     "hjs-webpack": "^8.1.0",
+    "html-loader": "^0.4.3",
+    "install": "^0.8.1",
     "invariant": "^2.2.1",
     "jsdom": "^8.1.0",
+    "markdown-loader": "^0.1.7",
+    "markdown-with-front-matter-loader": "^0.1.0",
     "marked": "^0.3.5",
     "mocha": "^2.4.5",
     "nodemon": "^1.9.1",
+    "npm": "^3.9.2",
     "npm-font-open-sans": "0.0.3",
     "postcss-loader": "^0.8.2",
     "precss": "^1.4.0",
+    "raw-loader": "^0.5.1",
     "react": "^15.0.0",
     "react-addons-test-utils": "^15.0.0",
     "react-dom": "^15.0.0",
@@ -77,6 +83,7 @@
   },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
+    "react-github-fork-ribbon": "^0.4.4",
     "redux": "^3.5.2",
     "redux-actions": "^0.9.1",
     "whatwg-fetch": "^1.0.0"

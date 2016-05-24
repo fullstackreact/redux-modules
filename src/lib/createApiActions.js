@@ -138,7 +138,6 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
  // @param type - string constant
  // @return function - a nwe decorated function Object.defineProperty
 export function api(type, requestTransforms, responseTransforms, metaCreator) {
-  // console.log('type in @api ->', type);
   // The decorator function wrapper (design: decoratorFn(fn()))
   // @param target - function to be decorated
   // @param name - the function name

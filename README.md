@@ -1,8 +1,36 @@
+## Redux modules
+
+The `redux-modules` package offers a different method of handling [redux](http://redux.js.org/) module packaging.
+
+The overall idea behind `redux-modules` is to build all of the corresponding redux functionality, constants, reducers, actions in a common location that makes it easy to understand the entire workflow common to a component of an application.
+
+Redux modules is essentially a collection of helpers that provide functionality for common tasks related to using Redux.
+
+## Quick take
+
+A redux module enables us to build our redux modules in a simple manner. A redux module can be as simple as:
+
+```javascript
+/**
+ * Creates a `types` object
+ * with the hash of CREATE, DELETE, MARK_DONE constants
+ **/
+const types = createConstants('TODO')( 'CREATE', 'DELETE', 'MARK_DONE');
+```
+
+## Example
+
+For example, let's take the idea of writing a TODO application. We'll need three actions:
+
+* Create
+* Delete
+* Mark done
+
+Using `redux-modules`,
+
 ## Redux api handlers
 
-Currently, I'm working through building the api layer for the redux model post. In it's current iteration, there are two requirements. 
-
-The first requirement is to require a middleware (similar to the `react-redux-routing` library) to provide common api configuration settings. 
+The first requirement is to require a middleware (similar to the `react-redux-routing` library) to provide common api configuration settings.
 
 ```javascript
 // ...
@@ -11,7 +39,7 @@ let apiMiddleware = createApiMiddleware({
                       baseUrl: BASE_URL,
                       headers: {}
                     });
-let store = createStore(reducers, 
+let store = createStore(reducers,
             applyMiddleware(apiMiddleware, thunk));
 // ...
 ```
@@ -50,7 +78,7 @@ fetchAll: (client, opts) => {
 }
 ```
 
-To handle this api in a reducer, we have the `@apiHandler` decorator. The `@apiHandler` decorator provides a common interface for handling the different states of an api request (i.e. `loading`, `success`, and `error` states). 
+To handle this api in a reducer, we have the `@apiHandler` decorator. The `@apiHandler` decorator provides a common interface for handling the different states of an api request (i.e. `loading`, `success`, and `error` states).
 
 ```javascript
 @apiHandler(types.FETCH_ALL)
@@ -70,4 +98,4 @@ To handle custom loading states, we can "hook" into them with a second argument:
 handleFetchAll: (state, {payload}) => {...state, ...payload}
 ```
 
-
+## Combining usage with `ducks-modular-redux`

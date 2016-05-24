@@ -1,6 +1,9 @@
-@import url("../node_modules/highlight.js/styles/github.css");
+@import url("../node_modules/highlight.js/styles/tomorrow-night.css");
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300);
 
 #readme {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
   padding: 10px;
 
   img {
