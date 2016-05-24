@@ -15,7 +15,9 @@ A redux module enables us to build our redux modules in a simple manner. A redux
  * Creates a `types` object
  * with the hash of CREATE, DELETE, MARK_DONE constants
  **/
-const types = createConstants('TODO')( 'CREATE', 'DELETE', 'MARK_DONE');
+const types = createConstants({
+  prefix: 'TODO'
+})('FETCH_ALL', 'CREATE', 'DELETE', 'MARK_DONE');
 
 /**
  * The root reducer that handles only create
@@ -142,5 +144,3 @@ The `redux-modules` is comprised by the following exports:
 ### createApiAction/@api
 
 ### createApiHandler/@apiHandler
-
-### apiHandler
