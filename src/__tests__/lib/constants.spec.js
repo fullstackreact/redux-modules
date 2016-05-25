@@ -99,6 +99,26 @@ describe('createConstants', () => {
         })
     })
 
+  describe('separator', () => {
+    it('can accept a string separator', () => {
+      let types = createConstants({
+        separator: '/'
+      })('DOG', 'CAT');
+      expect(Object.keys(types).length).to.equal(2);
+      expect(types.DOG).to.eql('/DOG')
+      expect(types.CAT).to.eql('/CAT');
+    });
+
+    it('accepts an array prefix', () => {
+      const types = createConstants({
+        separator: '/',
+        prefix: ['test', 'animals']
+      })('DOG', 'CAT')
+      expect(Object.keys(types).length).to.equal(2);
+      expect(types.DOG).to.eql('TEST/ANIMALS/DOG');
+      expect(types.CAT).to.eql('TEST/ANIMALS/CAT');
+    })
+  })
 })
 
 describe('apiKeys', () => {
