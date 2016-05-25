@@ -47,7 +47,7 @@ export class ApiClient {
 
     ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'].forEach((method) => {
       this[method.toLowerCase()] = (options) => {
-        let opts = this.requestDefaults(method, baseOpts);
+        let opts = this.requestDefaults(method, baseOpts, baseOpts);
 
         let url = this._getUrl(options, baseOpts);
         let state = getState();
@@ -102,15 +102,14 @@ export class ApiClient {
     return (typeof val === 'function') ? val.call(this, opts) : val;
   }
 
-  requestDefaults (method, params) {
+  requestDefaults (method, params, defaultOpts) {
     let opts = params || {};
 
-    let headers = Object.assign({},
-      sharedHeaders,
-      (opts.headers || {}));
+    let customHeaders = this._parseOpt('headers', opts, defaultOpts, {});
+    let headers = Object.assign({}, sharedHeaders, customHeaders);
 
-    let meta = opts.meta || {};
-    let data = opts.data || {};
+    let meta = this._parseOpt('meta', opts, defaultOpts, {});
+    let data = this._parseOpt('data', opts, defaultOpts, {});
 
     let requestOpts = {
       method: method,
