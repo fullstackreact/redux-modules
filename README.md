@@ -71,7 +71,7 @@ const actions = createActions({
 })
 ```
 
-In our app, our entire todo handler, reducer, and actions are all in one place in a single file. Incorporating the handler, reducer, and actions in our redux app is up to you. See [Usage in Redux](#usage-with-redux) for information.
+In our app, our entire todo handler, reducer, and actions are all in one place in a single file. Incorporating the handler, reducer, and actions in our redux app is up to you. See [Usage in Redux](#usage-with-react-redux) for information.
 
 ## Example
 
@@ -334,7 +334,105 @@ To handle custom loading states, we can "hook" into them with a second argument.
 handleFetchAll: (state, {payload}) => {...state, ...payload}
 ```
 
-## Usage with redux
+## Usage with react-redux
+
+There are multiple methods for combining `redux-modules` with react and this is our opinion about how to use the two together.
+
+First, our directory structure generally sets all of our modules in their own directory:
+
+```bash
+index.js
+  /redux
+    /modules/
+      todo.js
+      users.js
+    configureStore.js
+    rootReducer.js
+    index.js
+```
+
+Configuring the store for our app is straight-forward. First, we'll apply the `createApiMiddleware()` before we create the final store. In a `configureStore.js` file, we like to handle creating a store in a single spot. We'll export a function to configure the store:
+
+```javascript
+import {rootReducer, actions} from './rootReducer'
+
+export const configureStore = ({initialState = {}}) => {
+  let middleware = [
+    createApiMiddleware({
+      baseUrl: BASE_URL
+    }),
+    thunkMiddleware
+  ]
+  // ...
+  const finalCreateStore =
+        compose(applyMiddleware(...middleware))(createStore);
+
+  const store = finalCreateStore(rootReducer, initialState);
+  // ...
+}
+```
+
+This creates the middleware for us. Next, we like to combine our actions into a single actions object that we'll pass along down through our components. Although this isn't super elegant, we use the following snippet to bind our actions to the store. Just after we create the store, we'll:
+
+```javascript
+// create actions here
+Object.keys(actions).forEach(k => {
+  let theseActions = actions[k];
+
+  let actionCreators = Object.keys(theseActions)
+    .reduce((sum, actionName) => {
+      // theseActions are each of the module actions which
+      // we export from the `rootReducer.js` file (we'll create shortly)
+      let fn = theseActions[actionName];
+      // We'll bind them to the store
+      sum[actionName] = fn.bind(store);
+      return sum;
+    }, {});
+
+  // Using react-redux, we'll bind all these actions to the
+  // store.dispatch
+  actions[k] = bindActionCreators(actionCreators, store.dispatch);
+});
+```
+From here, we just return the store and actions from the function:
+
+```javascript
+export const configureStore = ({initialState = {}}) => {
+  // ...
+  const store = finalCreateStore(rootReducer, initialState);
+  // ...
+  actions[k] = bindActionCreators(actionCreators, store.dispatch);
+
+  return {store, actions};
+}
+```
+
+Now that the heavy-lifting is done, the `rootReducer.js` file is pretty simple. We export all the actions and reducers pretty simply:
+
+```javascript
+const containers = ['users', 'todos'];
+
+export const reducers = {}
+export const actions = {};
+
+containers.forEach(k => {
+  let val = require(`./modules/${v}`);
+  reducers[k] = val.reducer;
+  actions[k] = val.actions || {};
+});
+
+export const rootReducer = combineReducers(reducers);
+```
+
+From here, our main container can pass the store and actions as props to our components:
+
+```javascript
+const {store, actions} = configureStore({initialState});
+// ...
+ReactDOM.render(
+  <Container store={store}, actions={actions} />,
+  node);
+```
 
 ## Combining usage with `ducks-modular-redux`
 
