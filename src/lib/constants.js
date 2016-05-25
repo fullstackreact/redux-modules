@@ -27,6 +27,7 @@ export function apiValues(name, states = apiStates) {
 
 export function createConstants(opts) {
   opts = opts || {};
+  let separator = opts.separator || '_';
 
   if (typeof opts === 'string') {
     opts = {prefix: opts}
@@ -50,7 +51,7 @@ export function createConstants(opts) {
         }
       });
     } else {
-      v = v || `${prefix}_${n}`.toUpperCase();
+      v = v || [].concat.apply([], [prefix, n]).join(separator).toUpperCase();
       Object.defineProperty(obj, n, {
         value: v,
         enumerable: true,

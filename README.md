@@ -443,7 +443,7 @@ class Container extends React.Component {
 
 ## Combining usage with `ducks-modular-redux`
 
-`redux-modules`
+`redux-modules` plays nicely with other redux packages
 
 ## All exports
 
