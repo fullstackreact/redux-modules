@@ -372,28 +372,14 @@ export const configureStore = ({initialState = {}}) => {
 }
 ```
 
-This creates the middleware for us. Next, we like to combine our actions into a single actions object that we'll pass along down through our components. Although this isn't super elegant, we use the following snippet to bind our actions to the store. Just after we create the store, we'll:
+This creates the middleware for us. Next, we like to combine our actions into a single actions object that we'll pass along down through our components. We'll use the `bindActionCreatorsToStore()` export to build our action creators and bind them to the store.
+
+We'll need to bind our actions to the store, so that when we call dispatch it will use our store's dispatch (see [react-redux](https://github.com/reactjs/react-redux)). Just after we create the store, we'll:
 
 ```javascript
-// create actions here
-Object.keys(actions).forEach(k => {
-  let theseActions = actions[k];
-
-  let actionCreators = Object.keys(theseActions)
-    .reduce((sum, actionName) => {
-      // theseActions are each of the module actions which
-      // we export from the `rootReducer.js` file (we'll create shortly)
-      let fn = theseActions[actionName];
-      // We'll bind them to the store
-      sum[actionName] = fn.bind(store);
-      return sum;
-    }, {});
-
-  // Using react-redux, we'll bind all these actions to the
-  // store.dispatch
-  actions[k] = bindActionCreators(actionCreators, store.dispatch);
-});
+let actions = bindActionCreatorsToStore(actions, store);
 ```
+
 From here, we just return the store and actions from the function:
 
 ```javascript
@@ -401,7 +387,7 @@ export const configureStore = ({initialState = {}}) => {
   // ...
   const store = finalCreateStore(rootReducer, initialState);
   // ...
-  actions[k] = bindActionCreators(actionCreators, store.dispatch);
+  let actions = bindActionCreatorsToStore(actions, store);
 
   return {store, actions};
 }
@@ -434,8 +420,30 @@ ReactDOM.render(
   node);
 ```
 
+Now, anywhere in our code, we can refer to the actions we export in our modules by their namespace. For instance, to call the `createTodo()` function, we can reference it by the prop namespace:
+
+```javascript
+class Container extends React.Component {
+
+  createTodo() {
+    const {actions} = this.props;
+    // form: actions.[namespace].[actionName]();
+    actions.todos.createTodo("Finish this text");
+  }
+
+  render() {
+    return (
+      <div onClick={this.createTodo.bind(this)}>
+        Create todo
+      </div>
+    )
+  }
+}
+```
+
 ## Combining usage with `ducks-modular-redux`
 
+`redux-modules`
 
 ## All exports
 
@@ -446,6 +454,8 @@ The `redux-modules` is comprised by the following exports:
 `createConstants()` creates an object to handle creating an object of type constants. It allows for multiple
 
 ### createReducer
+
+### bindActionCreatorsToStore
 
 ### apiClient
 
