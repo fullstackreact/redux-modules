@@ -1,8 +1,3 @@
----
-todos:
-  - Why handle this in one project
----
-
 ## Redux modules
 
 The `redux-modules` package offers a different method of handling [redux](http://redux.js.org/) module packaging.
