@@ -443,19 +443,117 @@ class Container extends React.Component {
 
 ## Combining usage with `ducks-modular-redux`
 
-`redux-modules` plays nicely with other redux packages
+`redux-modules` plays nicely with other redux packages as well. For instance, the `ducks-modular-redux` package defines a specific method of handling actions, reducers, and types.
+
+To create types in the same way, we can use the `separator` and `prefix` options in `createConstants()`. For instance, to create the constants defined by `ducks-modular-redux`'s README':
+
+```javascript
+const LOAD   = 'my-app/widgets/LOAD';
+const CREATE = 'my-app/widgets/CREATE';
+const UPDATE = 'my-app/widgets/UPDATE';
+const REMOVE = 'my-app/widgets/REMOVE';
+// In redux-modules:
+const types = createConstants({
+  prefix: ['my-app', 'widgets'],
+  separator: '/'
+})('LOAD', 'CREATE', 'UPDATE', 'REMOVE')
+```
+
+Handling the reducer function is similarly easy as well:
+
+```javascript
+export default function reducer(state = {}, action = {}) {
+  switch (action.type) {
+    // do reducer stuff
+    default: return state;
+  }
+}
+const reducer = createReducer({
+  [types.LOAD]: (state, {payload}) => ({
+    ...state,
+    todos: state.todos.concat(payload)
+  }),
+  // ...
+});
+```
+
+Finally, exporting functions individually from the file is directly supported. The `createActions()` and `createApiAction()` helpers can be used directly on created functions.
 
 ## All exports
 
-The `redux-modules` is comprised by the following exports:
+The `redux-modules` comprises the following exports:
 
 ### createConstants
 
-`createConstants()` creates an object to handle creating an object of type constants. It allows for multiple
+`createConstants()` creates an object to handle creating an object of type constants. It allows for multiple types to be dynamically created with their own custom prefixing, created on a single object.
+
+```javascript
+const types = createConstants({})('DOG', 'CAT');
+```
+
+Options:
+
+* prefix (string/array, default: '')
+
+The `prefix` option creates each type with a predefined prefix.
+
+```javascript
+const types = createConstants({
+  prefix: 'animals'
+})('DOG', 'CAT')
+expect(types.DOG).to.eql('ANIMALS_DOG');
+expect(types.CAT).to.eql('ANIMALS_CAT');
+
+const types = createConstants({
+  prefix: ['test', 'animals']
+})('DOG', 'CAT')
+expect(types.DOG).to.eql('TEST_ANIMALS_DOG');
+expect(types.CAT).to.eql('TEST_ANIMALS_CAT');
+```
+
+* separator (string, default: `_`)
+
+The separator option allows us to change the way prefixes are concatenated. To change the separator to use a `/`, add the separator option:
+
+```javascript
+const types = createConstants({
+  separator: '/',
+  prefix: ['test', 'animals']
+})('DOG', 'CAT')
+expect(types.DOG).to.eql('TEST/ANIMALS/DOG');
+expect(types.CAT).to.eql('TEST/ANIMALS/CAT');
+```
+
+* initialObject (object, default: `{}`)
+
+For the case where you want to define types on an existing object, `createConstants()` accepts an `initialObject` to add the types. This allows us to create a single global object (for instance) to define all of our types.
+
+```javascript
+const types = createConstants({
+  initialObject: types
+})('OTHER', 'CONSTANTS');
+```
 
 ### createReducer
 
+The `createReducer()` function returns a function that acts similar to the switch-case functionality of redux where we'll define the types and the reducers that handle the types.
+
+```javascript
+const reducer = createReducer({
+  [types.CREATE]: (state, {payload}) => ({
+    ...state,
+    todos: state.todos.concat(payload)
+  })
+});
+```
+
 ### bindActionCreatorsToStore
+
+The `bindActionCreatorsToStore()` function accepts two arguments, the action handler object and the store object. It takes each action, binds the function to the `store` object (so `this` refers to the `store`) and then calls the `bindActionCreators()` redux function to the store object. Use the returned value as the reducer object.
+
+```javascript
+let actions = bindActionCreatorsToStore(actions, store);
+```
 
 ### apiClient
 
@@ -464,3 +562,37 @@ The `redux-modules` is comprised by the following exports:
 ### createApiAction/@api
 
 ### createApiHandler/@apiHandler
+
+## Contributing
+
+```shell
+git clone https://github.com/fullstackreact/redux-modules.git
+cd redux-modules
+npm install
+make dev
+```
+
+To run the tests (please ensure the tests pass when creating a pull request):
+
+```shell
+make test # or npm run test
+```
+
+___
+
+# Fullstack React Book
+
+<a href="https://fullstackreact.com">
+<img align="right" src="resources/readme/fullstack-react-hero-book.png" alt="Fullstack React Book" width="155" height="250" />
+</a>
+
+This Google Map React component library was built alongside the blog post [How to Write a Google Maps React Component](https://www.fullstackreact.com/articles/how-to-write-a-google-maps-react-component/).
+
+This repo was written and is maintained by the [Fullstack React](https://fullstackreact.com) team. In the book we cover many more projects like this. We walk through each line of code, explain why it's there and how it works.
+
+This app is only one of several apps we have in the book. If you're looking to learn React, there's no faster way than by spending a few hours with the Fullstack React book.
+
+<div style="clear:both"></div>
+
+## License
+ [MIT](/LICENSE)

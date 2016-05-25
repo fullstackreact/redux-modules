@@ -109,6 +109,15 @@ describe('createConstants', () => {
       expect(types.CAT).to.eql('/CAT');
     });
 
+    it('accepts a string prefix', () => {
+      const types = createConstants({
+        separator: '/',
+        prefix: 'animals'
+      })('DOG', 'CAT')
+      expect(types.DOG).to.eql('ANIMALS/DOG');
+      expect(types.CAT).to.eql('ANIMALS/CAT');
+    })
+
     it('accepts an array prefix', () => {
       const types = createConstants({
         separator: '/',
