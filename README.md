@@ -555,9 +555,63 @@ The `bindActionCreatorsToStore()` function accepts two arguments, the action han
 let actions = bindActionCreatorsToStore(actions, store);
 ```
 
+### createApiMiddleware
+
+In order to set global options for every api request, we have to include a middleware in our stack. Creating the middleware for our redux stack uses `createApiMiddleware()` and essentially looks for any api action (with `meta.isApi` set to true) and merges global options into the `meta` key of the action.
+
+We _must_ set the `baseUrl` in the middleware, which is used as the default url to make a request against. Without the `baseUrl`, all requests will be sent without an http component (unless set otherwise in the `apiClient`):
+
+```javascript
+let apiMiddleware = createApiMiddleware({
+                      baseUrl: `https://fullstackreact.com`,
+                      headers: {
+                        'Accept': 'application/json'
+                      }
+                    });
+```
+
 ### apiClient
 
-### createApiMiddleware
+The `apiClient` is a loose wrapper around the native html5 `fetch()` function (built around `isomorphic-fetch`, which makes testing easier). When an action is marked as an API action, it will be called with an instance of the `apiClient` as well as the options `fetch()` will be called with. This gives us an easy, flexible way to make API requests.
+
+The `apiClient` instance creates methods for each HTTP method, which accepts custom parameters to make the requests. It handles building the request, the options, putting together the url, packaging the body, request and response transformations, and more.
+
+Using the `apiClient` instance inside of an api action request looks like:
+
+```javascript
+@api(types.FETCH_ALL)
+fetchAll: (client, opts) => client.get({path: '/todos'})
+// or non-decorator version
+let decoratedFetchall = createApiAction(types.FETCH_ALL)(function(client, opts) {
+  return client.get({path: '/todos'})
+});
+```
+
+By default, the request is assumed to be in json format, but this is flexible and can be manipulated on a global/per-request level.
+
+Every option that the `apiMiddleware` and `apiClient.[method]` accepts can be either an atomic value or it can be a function. If a function is passed, it will be called at runtime with the current options and state to allow for dynamic responses based upon the state.
+
+The available options for _both_ apiMiddleware and client method requests are:
+
+* path
+
+The `path` is the route passed through to the client to build the url to make the request against.
+
+```javascript
+client.get({path: '/todos'});
+// Alternatively, if a string is passed, it is considered
+// to be the path, so without any other options, we can
+// do this to achieve the same effect
+client.get('/todos');
+```
+
+* url
+
+To override the `baseUrl` for our requests, we can pass the `url` key, which will be the url set for the request, regardless of the path.
+
+```javascript
+client.get({url: 'http://api.github.com/v1/explore'});
+```
 
 ### createApiAction/@api
 
