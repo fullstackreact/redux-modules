@@ -591,31 +591,70 @@ By default, the request is assumed to be in json format, but this is flexible an
 
 Every option that the `apiMiddleware` and `apiClient.[method]` accepts can be either an atomic value or it can be a function. If a function is passed, it will be called at runtime with the current options and state to allow for dynamic responses based upon the state.
 
-The available options for _both_ apiMiddleware and client method requests are:
-
-* path
-
-The `path` is the route passed through to the client to build the url to make the request against.
-
-```javascript
-client.get({path: '/todos'});
-// Alternatively, if a string is passed, it is considered
-// to be the path, so without any other options, we can
-// do this to achieve the same effect
-client.get('/todos');
-```
-
-* url
-
-To override the `baseUrl` for our requests, we can pass the `url` key, which will be the url set for the request, regardless of the path.
-
-```javascript
-client.get({url: 'http://api.github.com/v1/explore'});
-```
+The available options for _both_ apiMiddleware and client method requests are [here](#api-client-options).
 
 ### createApiAction/@api
 
+To create an api action creator, we can decorate it with the `@api` decorator (when defined inline in an object) or using the `createApiAction()` function. Using this decorator, the function itself will be used to fetch an api.
+
+The decorated function is expected to use the `client`, although it is not required. It is expected that the decorated function returns a value, either a promise or an atomic value.
+
+```javascript
+{
+  actions: {
+    @api(types.FETCH_ALL)
+    fetchAll: (client, opts) => client.get({path: '/todos'})
+  }
+}
+// OR non-decorator version
+const fetchAll = createApiAction(types.FETCH_ALL)(
+  (client, opts) => client.get('/todos'));
+```
+
+Using the decorator will dispatch actions according to their response status, first dispatching the `loading` type (i.e. `{type: 'API_FETCH_ALL_LOADING', opts}`), then it calls the handler. Once the handler returns, the corresponding action `_SUCCESS` or `_ERROR` action types are dispatched.
+
 ### createApiHandler/@apiHandler
+
+In order to handle the response from an api request, we need to create a reducer. The `api` decorator fires the status values for the state of the api request. Using the `createApiHandler()/@apiHandler` decorator sets up default handlers for dealing with these responses.
+
+```javascript
+{
+  reducers: {
+    @apiHandler(types.FETCH_ALL)
+    handleFetchAll: (state, action) => ({...state, ...action.payload});
+  }
+}
+// or non-decorator version
+const handlers = createApiHandler(types.FETCH_ALL) => {})((state, action) => {
+  return {
+    ...state,
+    ...action.payload
+  }  
+});
+```
+
+The default actions will set the `loading` flag to true when the `_LOADING` action type is called, while the `loading` flag (in the state) will be set to false for the `_ERROR` and `_SUCCESS` types.
+
+For the case where we want to handle the states in a custom way, we can pass a second argument as a function which is called with the api states object where we can set custom handlers. For instance, to handle loading and errors in our previous example:
+
+```javascript
+{
+  reducers: {
+    @apiHandler(types.FETCH_ALL, (apiStates) => {
+      [apiStates.loading]: (state, action) => ({...state, loading: true}),
+      [apiStates.error]: (state, action) => {
+        return ({
+          ...state,
+          error: action.payload
+        })
+      }
+    })
+    handleFetchAll: (state, action) => ({...state, ...action.payload});
+  }
+}
+```
+
+The decorated function is considered the success handler.
 
 ## Contributing
 
@@ -637,7 +676,7 @@ ___
 # Fullstack React Book
 
 <a href="https://fullstackreact.com">
-<img align="right" src="resources/readme/fullstack-react-hero-book.png" alt="Fullstack React Book" width="155" height="250" />
+<img align="right" src="https://github.com/fullstackreact/google-maps-react/raw/master/resources/readme/fullstack-react-hero-book.png" alt="Fullstack React Book" width="155" height="250" />
 </a>
 
 This repo was written and is maintained by the [Fullstack React](https://fullstackreact.com) team. In the book we cover many more projects like this. We walk through each line of code, explain why it's there and how it works.
