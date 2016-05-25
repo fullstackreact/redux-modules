@@ -11,7 +11,6 @@ The overall idea behind `redux-modules` is to build all of the corresponding red
 
 Redux modules is essentially a collection of helpers that provide functionality for common tasks related to using Redux.
 
-
 ## Quick take
 
 A redux module enables us to build our redux modules in a simple manner. A redux module can be as simple as:
@@ -72,6 +71,12 @@ const actions = createActions({
 ```
 
 In our app, our entire todo handler, reducer, and actions are all in one place in a single file. Incorporating the handler, reducer, and actions in our redux app is up to you. See [Usage in Redux](#usage-with-react-redux) for information.
+
+## Installation
+
+```bash
+npm install --save redux-module-builder
+```
 
 ## Example
 
