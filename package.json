@@ -1,6 +1,6 @@
 {
   "name": "redux-module-builder",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Redux modules",
   "author": "Fullstack.io <us@fullstack.io>",
   "license": "MIT",
