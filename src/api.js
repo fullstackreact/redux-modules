@@ -1,4 +1,4 @@
-export { apiClient } from './apiClient.js';
-export { createApiMiddleware } from './createApiMiddleware';
-export { createApiAction, api } from './createApiActions';
-export { createApiHandler, apiHandler } from './createApiHandler';
+export { apiClient } from './lib/apiClient.js';
+export { createApiMiddleware } from './lib/createApiMiddleware';
+export { createApiAction, api } from './lib/createApiActions';
+export { createApiHandler, apiHandler } from './lib/createApiHandler';
