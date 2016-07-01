@@ -1,6 +1,8 @@
 import invariant from 'invariant';
 
 export const REDUX_MODULE_ACTION_KEY = 'REDUX_MODULES/ACTION'
+export const REDUX_MODULE_API_ACTION_KEY = 'REDUX_MODULES/API_ACTION'
+
 /*
  * Default api states
  */

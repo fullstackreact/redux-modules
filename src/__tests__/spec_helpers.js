@@ -28,6 +28,7 @@ const handleResponse = (status, msg) => (reqUrl, reqOpts) => {
 
 export const makeBaseOpts = (opts = {}) => Object.assign({}, {
     _debug: false,
+    autoExecute: false,
     baseUrl: BASE_URL,
     appendExt: false, // optional
     headers: {

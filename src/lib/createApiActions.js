@@ -35,12 +35,13 @@
    handleSaveEstimateSuccess: {}
  ************************************************/
 import {createAction} from 'redux-actions';
-import {REDUX_MODULE_ACTION_KEY} from './constants';
+import {REDUX_MODULE_API_ACTION_KEY} from './constants';
 import ApiClient from './apiClient';
 import {apiStates, getApiTypes, toApiKey, noop} from './utils';
 
 export const API_CONSTANTS = {
   401: 'API_ERROR_FOUR_OH_ONE',
+  418: 'API_ERROR_I_AM_A_LITTLE_TEAPOT',
   // 422: 'API_ERROR_UNPROCESSABLE',
   UNKNOWN_ERROR: 'API_ERROR_UNKNOWN'
 }
@@ -48,7 +49,7 @@ export const API_CONSTANTS = {
 const getActionTypesForKeys = (type, actionCreator = noop, metaCreator = noop) => getApiTypes(type)
   .reduce((memo, key, idx) => ({
     ...memo,
-    [apiStates[idx]]: createAction(toApiKey(key), actionCreator, metaCreator)
+    [apiStates[idx]]: createAction(toApiKey(key), actionCreator, (...args) => ({isApi: true, ...metaCreator(args)}))
   }), {});
 
 // Define a decorator for a function defined in an object
@@ -77,7 +78,13 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
     // return function decorated(globalOpts) {
       // globalOpts = globalOpts || {};
       // return a function (for thunk)
-      return () => (dispatch, getState) => {
+      return (configurationOpts={}) => (dispatch, getState) => {
+
+        let autoExecute = true;
+        if (typeof configurationOpts.autoExecute !== 'undefined') {
+          autoExecute = configurationOpts.autoExecute;
+          delete configurationOpts['autoExecute'];
+        }
 
         // Small helper to turn all functions within this decorated functions
         // into a promise
@@ -89,11 +96,15 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
         let loading = promiseWrapper(apiTypes.loading);
         let success = promiseWrapper(apiTypes.success);
         let error   = (errorObj) => {
+          const getErrorStatus = status => typeof API_CONSTANTS[status] !== 'undefined' ?
+                                              API_CONSTANTS[status] :
+                                              API_CONSTANTS.UNKNOWN_ERROR;
+
           const reduceError = err => dispatch(apiTypes.error({error: errorObj, body: err}));
           const errType = getApiTypes(type)[2];
           const errStatus = errorObj && errorObj.status ?
-              API_CONSTANTS[errorObj.status] :
-              API_CONSTANTS.UNKNOWN_ERROR;
+                getErrorStatus(errorObj.status) :
+                API_CONSTANTS.UNKNOWN_ERROR;
 
             const action = {
               type: errType,
@@ -139,12 +150,14 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
         };
 
         const action = {
-          type: REDUX_MODULE_ACTION_KEY,
+          type: REDUX_MODULE_API_ACTION_KEY,
           meta: { runFn, type }
         }
-        dispatch(action);
-        // return action;
-
+        if (autoExecute) {
+          dispatch(action);
+        } else {
+          return action;
+        }
         // dispatch(action);
         // return action;
       };
