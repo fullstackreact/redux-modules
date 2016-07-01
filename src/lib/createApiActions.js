@@ -35,18 +35,20 @@
    handleSaveEstimateSuccess: {}
  ************************************************/
 import {createAction} from 'redux-actions';
+import {REDUX_MODULE_ACTION_KEY} from './constants';
 import ApiClient from './apiClient';
 import {apiStates, getApiTypes, toApiKey, noop} from './utils';
 
 export const API_CONSTANTS = {
   401: 'API_ERROR_FOUR_OH_ONE',
   // 422: 'API_ERROR_UNPROCESSABLE',
+  UNKNOWN_ERROR: 'API_ERROR_UNKNOWN'
 }
 
 const getActionTypesForKeys = (type, actionCreator = noop, metaCreator = noop) => getApiTypes(type)
   .reduce((memo, key, idx) => ({
     ...memo,
-    [apiStates[idx]]: createAction(toApiKey(key), actionCreator, (...args) => ({isApi: true, ...metaCreator(args)}))
+    [apiStates[idx]]: createAction(toApiKey(key), actionCreator, metaCreator)
   }), {});
 
 // Define a decorator for a function defined in an object
@@ -72,13 +74,11 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
     //      }
     let apiTypes = getActionTypesForKeys(type, (t) => t, metaCreator);
     // The new value for the object definition
-    return function decorated(opts) {
-      opts = opts || {};
+    // return function decorated(globalOpts) {
+      // globalOpts = globalOpts || {};
       // return a function (for thunk)
-      return (dispatch, getState) => {
-        // The `initializer` is the original pre-decorated function
-        // let actionFn = def ? def.initializer(opts) : target;
-        let actionFn = target;
+      return () => (dispatch, getState) => {
+
         // Small helper to turn all functions within this decorated functions
         // into a promise
         let promiseWrapper = (fn) => {
@@ -90,50 +90,65 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
         let success = promiseWrapper(apiTypes.success);
         let error   = (errorObj) => {
           const reduceError = err => dispatch(apiTypes.error({error: errorObj, body: err}));
-          if (errorObj && errorObj.status) {
-            const apiConstForStatus = API_CONSTANTS[errorObj.status] || getApiTypes(type)[2]
+          const errType = getApiTypes(type)[2];
+          const errStatus = errorObj && errorObj.status ?
+              API_CONSTANTS[errorObj.status] :
+              API_CONSTANTS.UNKNOWN_ERROR;
+
             const action = {
-              type: apiConstForStatus,
-              payload: errorObj,
-              meta: { isApi: true }
+              type: errType,
+              payload: {
+                error: errorObj,
+                status: errStatus
+              }
             };
             dispatch(action)
             return action;
-          }
-          // throw errorObj;
-          // return errorObj.body.then(reduceError).catch(reduceError);
         }
 
-        // Every action gets an instance of ApiClient
-        let client =
-          new ApiClient(opts, getState, requestTransforms, responseTransforms);
-        // NOTE, check this: do we need below version ?
-        // new ApiClient(opts, getState, requestTransforms, responseTransforms);
+        const runFn = (opts) => {
+          // The `initializer` is the original pre-decorated function
+          // let actionFn = def ? def.initializer(opts) : target;
+          let actionFn = target;
+          // Every action gets an instance of ApiClient
+          let client =
+            new ApiClient(opts, getState, requestTransforms, responseTransforms);
+          // NOTE, check this: do we need below version ?
+          // new ApiClient(opts, getState, requestTransforms, responseTransforms);
 
-        // callAction wraps the `async` functionality that ensures
-        // we always get a promise returned (and can be used to pass along
-        // other thunk functions)
-        let callAction = () => {
-          let retVal = actionFn.call(null, client, opts, getState, dispatch);
-          if (typeof retVal.then !== 'function') {
-            retVal = Promise.resolve(retVal);
-          }
-          return retVal
-            .then(success)
-            .catch(error);
+          // callAction wraps the `async` functionality that ensures
+          // we always get a promise returned (and can be used to pass along
+          // other thunk functions)
+          let callAction = () => {
+            loading(opts);
+            let retVal = actionFn.call(null, client, opts, getState, dispatch);
+            if (typeof retVal.then !== 'function') {
+              retVal = Promise.resolve(retVal);
+            }
+            return retVal
+              .then(success)
+              .catch(error);
+          };
+          // NOTE, check this: do we need below version ?
+          // new ApiClient(opts, getState, requestTransforms, responseTransforms);
+
+          // callAction wraps the `async` functionality that ensures
+          // we always get a promise returned (and can be used to pass along
+          // other thunk functions)
+          return callAction();
         };
-        // NOTE, check this: do we need below version ?
-        // new ApiClient(opts, getState, requestTransforms, responseTransforms);
 
-        // callAction wraps the `async` functionality that ensures
-        // we always get a promise returned (and can be used to pass along
-        // other thunk functions)
-        return [
-          loading(opts),
-          callAction()
-        ];
+        const action = {
+          type: REDUX_MODULE_ACTION_KEY,
+          meta: { runFn, type }
+        }
+        dispatch(action);
+        // return action;
+
+        // dispatch(action);
+        // return action;
       };
-    };
+    // };
   };
 }
 

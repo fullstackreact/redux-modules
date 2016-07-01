@@ -71,11 +71,11 @@ export function createApiHandler(type, handlerFn) {
 
     // Custom handlers for the different api states from the second argument
     // If no function is passed, the identify function is used
-    let handlers = handlerFn(namesToState) || {};
+    let fnHandlerKeys = handlerFn(namesToState) || {};
 
     // Compute difference between the default hanlders and our almost new target
     // Keys our custom function handler overwrites defaults
-    let handlerKeys = Object.keys(handlers);
+    let handlerKeys = Object.keys(fnHandlerKeys);
 
     // All handler keys, i.e. loading, success, error
     let defaultReducerKeys = Object.keys(reducers);
@@ -84,6 +84,7 @@ export function createApiHandler(type, handlerFn) {
     // i.e. allows us to only overwrite 1..n without overwriting other defaults
     let missingHandlerKeys = defaultReducerKeys.filter(x => handlerKeys.indexOf(x) === -1);
 
+    let handlers = Object.assign({}, fnHandlerKeys, {});
     // Set defaults for those undefined by custom function
     missingHandlerKeys.forEach(k => handlers[k] = reducers[k]);
 

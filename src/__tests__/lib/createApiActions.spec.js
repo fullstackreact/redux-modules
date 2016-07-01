@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import {expect} from 'chai';
 import ApiClient from '../../lib/apiClient';
 import {createApiAction} from '../../lib/createApiActions';
+import {REDUX_MODULE_ACTION_KEY} from '../../lib/constants';
 import configureMockStore from 'redux-mock-store';
 import {generateResponse, makeBaseOpts, BASE_URL, makeStore, doDispatch, doGetState} from '../spec_helpers';
 // import 'whatwg-fetch';
@@ -19,22 +20,26 @@ describe('@api decorator', () => {
     store = res.store;
     fn = (client) => client.get('/go')
   });
-  beforeEach(() => decorated = createApiAction('YES')(fn)(baseOpts))
+  beforeEach(() => decorated = createApiAction('YES')(fn))
   afterEach(() => fetchMock.restore());
 
   it('calls two actions (LOADING, SUCCESS)', (done) => {
     generateResponse('/go', 200);
-    let res = decorated(store.dispatch, store.getState);
-    res[1]
-    .then((json) => {
-      let actions = store.getActions();
+    let {meta} = decorated(store.dispatch, store.getState);
+    let {runFn} = meta;
 
-      expect(actions.length).to.equal(2);
-      expect(actions[0].type).to.eql('YES_LOADING');
-      expect(actions[1].type).to.eql('YES_SUCCESS');
-      done();
-    })
-    .catch(done)
+    let ret = runFn
+console.log('ret ->', store.getActions());
+    ret(baseOpts)
+      .then(json => {
+        let actions = store.getActions();
+        console.log('json --->', actions);
+        expect(actions[0].type).to.eql('YES_LOADING')
+        expect(actions[1].type).to.eql(REDUX_MODULE_ACTION_KEY)
+        expect(actions[2].type).to.eql('YES_SUCCESS');
+        done();
+      })
+      .catch(done);
   });
 
   it('calls the error action when error is received', (done) => {
