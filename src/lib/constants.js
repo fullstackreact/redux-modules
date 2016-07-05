@@ -1,21 +1,8 @@
 import invariant from 'invariant';
+import {apiKeys, apiStates, getApiTypes, toApiKey} from './utils';
 
 export const REDUX_MODULE_ACTION_KEY = 'REDUX_MODULES/ACTION'
 export const REDUX_MODULE_API_ACTION_KEY = 'REDUX_MODULES/API_ACTION'
-
-/*
- * Default api states
- */
-export const apiStates = ['loading', 'success', 'error'];
-
-/*
- * apiKeys to fetch the api key type
- */
-export function apiKeys(name, states = apiStates) {
-  return states.map((state) => `${name}_${state}`.toUpperCase())
-}
-
-const toApiKey = (key) => `api_${key}`.toUpperCase();
 
 /*
  * get the api values

@@ -101,7 +101,7 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
                                               API_CONSTANTS.UNKNOWN_ERROR;
 
           const reduceError = err => dispatch(apiTypes.error({error: errorObj, body: err}));
-          const errType = getApiTypes(type)[2];
+          const errType = toApiKey(getApiTypes(type)[2]);
           const errStatus = errorObj && errorObj.status ?
                 getErrorStatus(errorObj.status) :
                 API_CONSTANTS.UNKNOWN_ERROR;
@@ -138,6 +138,8 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
             }
             return retVal
               .then(success)
+              // Should we _also_ fire the original event, even if it's an API request too?
+              // .then((...args) => dispatch({type: type, payload: args}))
               .catch(error);
           };
           // NOTE, check this: do we need below version ?

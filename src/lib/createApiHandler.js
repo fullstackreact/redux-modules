@@ -1,8 +1,7 @@
-import {apiStates, getApiTypes, toApiKey} from './utils';
-
+import {upcase, apiStates, getApiTypes, toApiKey} from './utils';
 
 function apiKeys(name) {
-  return apiStates.map((state) => `${name}_${state}`.toUpperCase());
+  return apiStates.map((state) => upcase(`${name}_${state}`))
 }
 
 // Default reducers (this happens when you don't define a reducer per state)
@@ -34,7 +33,7 @@ function handlerReducersForType(type:String) {
   let namesToState = {};
   apiActionTypes.forEach((key, idx) => {
     reducers[apiActionTypes[idx]] = apiReducers[apiStates[idx]];
-    namesToState[toApiKey(apiStates[idx])] = apiActionTypes[idx];
+    namesToState[upcase(apiStates[idx])] = toApiKey(apiActionTypes[idx]);
   });
   return {reducers, namesToState};
 }

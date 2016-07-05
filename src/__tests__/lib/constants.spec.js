@@ -130,19 +130,6 @@ describe('createConstants', () => {
   })
 })
 
-describe('apiKeys', () => {
-    it('creates state keys', () => {
-        let keys = apiKeys('PERSON')
-        expect(keys).to.include('PERSON_LOADING')
-        expect(keys).to.include('PERSON_SUCCESS')
-        expect(keys).to.include('PERSON_ERROR')
-    });
-    it('creates state keys with dynamic states', () => {
-        let keys = apiKeys('PERSON', ['sit'])
-        expect(keys).to.include('PERSON_SIT')
-    });
-})
-
 describe('apiValues', () => {
     it('passes api values', () => {
         let vals = apiValues('BALL')

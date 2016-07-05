@@ -39,8 +39,8 @@ describe('@api decorator', () => {
       .then((json) => {
         let actions = store.getActions();
         expect(actions.length).to.equal(2);
-        expect(actions[0].type).to.eql('YES_LOADING');
-        expect(actions[1].type).to.eql('YES_SUCCESS');
+        expect(actions[0].type).to.eql('API_YES_LOADING');
+        expect(actions[1].type).to.eql('API_YES_SUCCESS');
         done();
       })
       .catch((err) => {
@@ -59,8 +59,8 @@ describe('@api decorator', () => {
         let actions = store.getActions();
 
         expect(actions.length).to.equal(2);
-        expect(actions[0].type).to.eql('YES_LOADING');
-        expect(actions[1].type).to.eql('YES_ERROR');
+        expect(actions[0].type).to.eql('API_YES_LOADING');
+        expect(actions[1].type).to.eql('API_YES_ERROR');
 
         done();
       }).catch(done)

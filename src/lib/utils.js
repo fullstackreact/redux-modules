@@ -1,16 +1,20 @@
 import invariant from 'invariant';
 
-export const apiStates = [
-  'loading', 'success', 'error'];
+/*
+ * Default api states
+ */
+export const apiStates = ['loading', 'success', 'error'];
 
+export const upcase = (str) => str.toUpperCase();
 
-
-export const apiKeys = (name) => {
-  return apiStates.map((state) => `${name}_${state}`.toUpperCase());
+/*
+ * apiKeys to fetch the api key type
+ */
+export function apiKeys(name, states = apiStates) {
+  return states.map((state) => upcase(`${name}_${state}`))
 }
 
-
-export const toApiKey = (k) => `${k}`.toUpperCase();
+export const toApiKey = (key) => upcase(`api_${key}`)
 export const getApiTypes = (type) => apiKeys(type).reduce((memo, key) => memo.concat(key), []);
 
 export const noop = (r) => r;

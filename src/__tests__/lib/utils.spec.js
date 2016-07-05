@@ -1,7 +1,20 @@
 import {expect} from 'chai';
-import {syncEach} from '../../lib/utils';
+import {apiKeys, syncEach} from '../../lib/utils';
 
 describe('Utils', () => {
+  describe('apiKeys', () => {
+      it('creates state keys', () => {
+          let keys = apiKeys('PERSON')
+          expect(keys).to.include('PERSON_LOADING')
+          expect(keys).to.include('PERSON_SUCCESS')
+          expect(keys).to.include('PERSON_ERROR')
+      });
+      it('creates state keys with dynamic states', () => {
+          let keys = apiKeys('PERSON', ['sit'])
+          expect(keys).to.include('PERSON_SIT')
+      });
+  })
+
   describe('syncEach', () => {
 
     it('returns the initial value with an empty list', (done) => {
