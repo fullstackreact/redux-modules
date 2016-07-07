@@ -128,6 +128,27 @@ describe('createConstants', () => {
       expect(types.CAT).to.eql('TEST/ANIMALS/CAT');
     })
   })
+
+  describe('custom types', () => {
+    let typeCreator;
+    beforeEach(() => {
+      typeCreator = createConstants({
+        prefix: 'animals',
+        customTypes: {
+          'api': ['loading', 'error', 'success'],
+          'sockets': ['connected', 'disconnected']
+        }
+      })
+    })
+
+    it.only('creates a constant with each of the different states of the constant', () => {
+      let types = typeCreator({'DOG': {types: 'sockets'}}, 'CAT')
+      // types should have types:
+      //  types.DOG_CONNECTED: 'SOCKETS_DOG_CONNECTED',
+      //  types.DOG_DISCONNECTED: 'SOCKETS_DOG_DISCONNECTED'
+      console.log('types', types);
+    })
+  })
 })
 
 describe('apiValues', () => {

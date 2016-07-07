@@ -1,9 +1,12 @@
 import invariant from 'invariant';
-import {apiKeys, apiStates, getApiTypes, toApiKey} from './utils';
+import {upcase, apiKeys, apiStates, getApiTypes, toApiKey} from './utils';
 
 export const REDUX_MODULE_ACTION_KEY = 'REDUX_MODULES/ACTION'
 export const REDUX_MODULE_API_ACTION_KEY = 'REDUX_MODULES/API_ACTION'
 
+let customTypes = {
+  api: apiStates
+}
 /*
  * get the api values
  */
@@ -15,9 +18,19 @@ export function apiValues(name, states = apiStates) {
     }), {});
 }
 
+export function createCustomTypes(name, states = []) {
+  customTypes[name] = states;
+}
+
 export function createConstants(opts) {
   opts = opts || {};
   let separator = opts.separator || '_';
+
+  if (opts.customTypes) {
+    Object.keys(opts.customTypes).forEach(key => {
+      createCustomTypes(key, opts.customTypes[key])
+    });
+  }
 
   if (typeof opts === 'string') {
     opts = {prefix: opts}
@@ -30,6 +43,26 @@ export function createConstants(opts) {
       Object.keys(n).forEach((key) => {
         if (n.hasOwnProperty(key)) {
           let val = n[key];
+          if (val && val.types) {
+            let types = Array.isArray(val.types) ? val.types : val.types.split(' ,');
+            types.forEach(type => {
+              // Define custom types for each
+              const states = customTypes[type] || [];
+              states.forEach((customKey) => {
+                const name = upcase(`${type}${separator}${customKey}`)
+                const keyPrefix = upcase([n, customKey].join(separator))
+                const valuePrefix = [prefix, type].join(separator);
+                console.log({
+                  type,
+                  keyPrefix,
+                  customKey,
+                  prefix,
+                });
+                // const apiPrefix = `api_${prefix}`;
+                defineType(obj, key, valuePrefix);
+              });
+            })
+          }
           if (val && val.api) defineApi(obj, prefix, key, val.states);
 
           // Don't store objects in static arrays

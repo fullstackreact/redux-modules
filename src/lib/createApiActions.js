@@ -113,11 +113,13 @@ export function createApiAction(type, requestTransforms, responseTransforms, met
                 status: errStatus
               }
             };
+
             dispatch(action)
             return action;
         }
 
-        const runFn = (opts) => {
+        const runFn = (runtimeOpts) => {
+          const opts = Object.assign({}, configurationOpts, runtimeOpts);
           // The `initializer` is the original pre-decorated function
           // let actionFn = def ? def.initializer(opts) : target;
           let actionFn = target;

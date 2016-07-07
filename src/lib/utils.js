@@ -7,6 +7,13 @@ export const apiStates = ['loading', 'success', 'error'];
 
 export const upcase = (str) => str.toUpperCase();
 
+// Polyfill Array.isArray
+if (!Array.isArray) {
+  Array.isArray = function(arg) {
+    return Object.prototype.toString.call(arg) === '[object Array]';
+  };
+}
+
 /*
  * apiKeys to fetch the api key type
  */
