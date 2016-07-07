@@ -135,19 +135,33 @@ describe('createConstants', () => {
       typeCreator = createConstants({
         prefix: 'animals',
         customTypes: {
-          'api': ['loading', 'error', 'success'],
+          'myApi': ['loading', 'error', 'success'],
           'sockets': ['connected', 'disconnected']
         }
       })
     })
 
-    it.only('creates a constant with each of the different states of the constant', () => {
-      let types = typeCreator({'DOG': {types: 'sockets'}}, 'CAT')
+    it('creates a constant with each of the different states of the constant', () => {
+      let types = typeCreator({'DOG': {types: 'sockets'}}, {'CAT': { types: 'myApi' }}, 'BIRD')
       // types should have types:
-      //  types.DOG_CONNECTED: 'SOCKETS_DOG_CONNECTED',
-      //  types.DOG_DISCONNECTED: 'SOCKETS_DOG_DISCONNECTED'
-      console.log('types', types);
+      //  types.DOG_CONNECTED: 'ANIMALS_SOCKETS_DOG_CONNECTED',
+      //  types.DOG_DISCONNECTED: 'ANIMALS_SOCKETS_DOG_DISCONNECTED'
+      expect(types.DOG_CONNECTED).to.be.defined;
+      expect(types.DOG_CONNECTED).to.eql('ANIMALS_SOCKETS_DOG_CONNECTED')
+      expect(types.DOG_DISCONNECTED).to.be.defined;
+      expect(types.DOG_DISCONNECTED).to.eql('ANIMALS_SOCKETS_DOG_DISCONNECTED')
+
+      expect(types.CAT_LOADING).to.be.defined;
+      expect(types.CAT_LOADING).to.eql('ANIMALS_MYAPI_CAT_LOADING');
+    });
+
+    it('associates api types with api', () => {
+      let types = typeCreator('BIRD', {'CAT': {api: true}})
+      expect(types.CAT_LOADING).to.be.defined;
+      expect(types.CAT_LOADING).to.eql('API_ANIMALS_CAT_LOADING');
+      expect(types.CAT_SUCCESS).to.eql('API_ANIMALS_CAT_SUCCESS');
     })
+
   })
 })
 

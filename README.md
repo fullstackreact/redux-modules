@@ -656,6 +656,10 @@ For the case where we want to handle the states in a custom way, we can pass a s
 
 The decorated function is considered the success handler.
 
+## TODOS:
+
+Use the custom type creator in `createConstants()` for defining apis
+
 ## Contributing
 
 ```shell

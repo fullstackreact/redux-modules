@@ -49,17 +49,11 @@ export function createConstants(opts) {
               // Define custom types for each
               const states = customTypes[type] || [];
               states.forEach((customKey) => {
-                const name = upcase(`${type}${separator}${customKey}`)
-                const keyPrefix = upcase([n, customKey].join(separator))
+                const name = upcase(`${key}${separator}${customKey}`)
+                const keyPrefix = upcase([type, customKey].join(separator))
                 const valuePrefix = [prefix, type].join(separator);
-                console.log({
-                  type,
-                  keyPrefix,
-                  customKey,
-                  prefix,
-                });
                 // const apiPrefix = `api_${prefix}`;
-                defineType(obj, key, valuePrefix);
+                defineType(obj, valuePrefix, name);
               });
             })
           }
