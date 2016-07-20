@@ -51,7 +51,6 @@ export class ApiClient {
         let opts = this.requestDefaults(method, baseOpts, baseOpts);
 
         let url = this._getUrl(options, baseOpts);
-        let state = getState();
 
         let requestTransforms =
             this._parseOpt('requestTransforms', options, baseOpts, []);
@@ -62,14 +61,14 @@ export class ApiClient {
         // let responseTransforms = [].concat(respTransforms);
 
         return new Promise((resolve, reject) => {
-          this.runTransforms(requestTransforms, state, opts)
+          this.runTransforms(requestTransforms, getState, opts)
             .then(this.debugLog(() => 'requesting...'))
             .then((transformedOpts) => fetch(url, transformedOpts))
             .then(this.debugLog())
             .then(checkStatus)
             .then(this.debugLog(resp => `Status: ${resp}`))
             .then((resp) => this
-                    .runTransforms(responseTransforms, state, resp))
+                    .runTransforms(responseTransforms, getState, resp))
             .then(this.debugLog(json => `JSON: ${json}`))
             .then(resolve)
             .catch(err => reject(err))
@@ -78,9 +77,9 @@ export class ApiClient {
     });
   }
 
-  runTransforms (transforms:Array, state:Object, opts:Object) {
+  runTransforms (transforms:Array, getState:Function, opts:Object) {
     return syncEach(noop(opts), (fn, prev) => {
-      return typeof fn === 'function' ? fn(state, opts) : fn;
+      return typeof fn === 'function' ? fn(getState, opts) : fn;
     })(transforms)
   }
 
