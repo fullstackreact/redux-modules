@@ -18,7 +18,6 @@ const createStubStore = () => {
 }
 describe('@api decorator', () => {
   let fn, decorated, baseOpts, store;
-  beforeEach(() => fetchMock.useNonGlobalFetch(fetch));
   beforeEach(() => baseOpts = makeBaseOpts({}));
   beforeEach(() => {
     let stub = createStubStore();

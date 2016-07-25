@@ -22,16 +22,11 @@ describe('ApiClient', () => {
   let client, state;
   let helpers;
 
-  beforeEach(() => fetchMock.useNonGlobalFetch(fetch));
-
   beforeEach(() => {
     fetchMock
       .mock(`${BASE_URL}/foo`, {
         status: 200,
         body: {msg: 'world'}
-      })
-      .mock('*', {
-        status: 404
       })
   });
 
@@ -108,13 +103,13 @@ describe('ApiClient', () => {
 
   describe('error handling', () => {
     let client;
-    const generateError = (status, msg={}) => {
+    const generateError = (status, msg={}, options={}) => {
       return fetchMock.mock(`${BASE_URL}/err`, (reqUrl, reqOpts) => {
         return {
           status,
           body: JSON.stringify(msg)
         }
-      });
+      })
     }
 
     beforeEach(() => {
@@ -122,15 +117,12 @@ describe('ApiClient', () => {
     });
 
     it('responds with the status code', (done) => {
-      generateError(500, {msg: 'blah'});
+      let p = generateError(500, {msg: 'blah'});
       client.get({path: '/err'})
       .catch((err) => {
-        try {
-          expect(err.status).to.equal(500);
-          done();
-        } catch (e) {
-          done(e);
-        }
+        expect(err.status).to.equal(500);
+  console.log('error catch ----->', err.status);
+        done();
       })
     });
 
@@ -138,6 +130,7 @@ describe('ApiClient', () => {
       generateError(400, {msg: 'error error'});
       client.get({path: '/err'})
         .catch((err) => {
+console.log('err ---->', err);
           err.body.then((json) => {
             expect(json.msg).to.eql('error error')
             done();
