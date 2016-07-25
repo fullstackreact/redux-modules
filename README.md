@@ -658,8 +658,8 @@ The decorated function is considered the success handler.
 
 ## TODOS:
 
-[] Use the custom type creator in `createConstants()` for defining apis
-[] Add docs for `createRootReducer()`
+* [x] Use the custom type creator in `createConstants()` for defining apis
+* [] Add docs for `createRootReducer()`
 
 ## Contributing
 
