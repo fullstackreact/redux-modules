@@ -1,8 +1,4 @@
 import * as qs from 'query-string';
-// import 'whatwg-fetch';
-if (typeof process !== 'undefined') {
-  require('isomorphic-fetch');
-}
 import {noop, syncEach} from './utils';
 
 export const sharedHeaders = {

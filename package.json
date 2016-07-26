@@ -84,7 +84,6 @@
   },
   "dependencies": {
     "invariant": "^2.2.1",
-    "isomorphic-fetch": "^2.2.1",
     "query-string": "^4.2.2",
     "react-github-fork-ribbon": "^0.4.4",
     "react-inspector": "^1.1.0",

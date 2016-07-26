@@ -4,7 +4,6 @@ import {createApiHandler} from '../../lib/createApiHandler';
 import configureMockStore from 'redux-mock-store';
 import {BASE_URL, generateResponse, makeStore} from '../spec_helpers';
 // import 'whatwg-fetch';
-import fetch from 'isomorphic-fetch'
 import fetchMock from 'fetch-mock';
 
 describe('apiHandler', () => {

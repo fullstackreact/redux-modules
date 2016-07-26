@@ -3,8 +3,6 @@ import {expect} from 'chai';
 import ApiClient from '../../lib/apiClient';
 import configureMockStore from 'redux-mock-store';
 import {makeStore} from '../spec_helpers';
-// import 'whatwg-fetch';
-import fetch from 'isomorphic-fetch'
 import fetchMock from 'fetch-mock';
 
 const BASE_URL = 'http://fullstackreact.com';

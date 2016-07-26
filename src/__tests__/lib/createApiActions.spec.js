@@ -5,8 +5,6 @@ import {createApiAction, API_CONSTANTS} from '../../lib/createApiActions';
 import {REDUX_MODULE_API_ACTION_KEY} from '../../lib/constants';
 import configureMockStore from 'redux-mock-store';
 import {generateResponse, makeBaseOpts, BASE_URL, makeStore, doDispatch, doGetState} from '../spec_helpers';
-// import 'whatwg-fetch';
-import fetch from 'isomorphic-fetch'
 import fetchMock from 'fetch-mock';
 
 const createStubStore = () => {
