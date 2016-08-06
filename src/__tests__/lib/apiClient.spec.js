@@ -96,8 +96,26 @@ describe('ApiClient', () => {
       client.get({path: '/foo', appendPath: '/yellow'})
         .then(() => done()).catch(done);
     });
-
   });
+
+  describe('post', () => {
+    it('defines POST as a function', () => {
+      expect(typeof client.post).to.eql('function');
+    });
+
+    it('sends `data` along with the request', (done) => {
+      fetchMock.post(`${BASE_URL}/foo`, {
+        msg: 'world'
+      })
+      client.post({
+        path: '/foo',
+        data: {msg: 'hello'}
+      }).then((data) => {
+        expect(data).to.eql({msg: 'world'})
+        done();
+      }).catch(done);
+    })
+  })
 
   describe('error handling', () => {
     let client;
@@ -119,7 +137,6 @@ describe('ApiClient', () => {
       client.get({path: '/err'})
       .catch((err) => {
         expect(err.status).to.equal(500);
-  console.log('error catch ----->', err.status);
         done();
       })
     });
@@ -128,7 +145,6 @@ describe('ApiClient', () => {
       generateError(400, {msg: 'error error'});
       client.get({path: '/err'})
         .catch((err) => {
-console.log('err ---->', err);
           err.body.then((json) => {
             expect(json.msg).to.eql('error error')
             done();
