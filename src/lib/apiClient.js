@@ -44,7 +44,7 @@ export class ApiClient {
 
     ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'].forEach((method) => {
       this[method.toLowerCase()] = (options) => {
-        let opts = this.requestDefaults(method, baseOpts, baseOpts);
+        let opts = this.requestDefaults(method, options, baseOpts);
 
         let url = this._getUrl(options, baseOpts);
 
