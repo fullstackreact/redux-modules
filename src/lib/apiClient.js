@@ -1,4 +1,5 @@
 import * as qs from 'query-string';
+import 'whatwg-fetch';
 import {noop, syncEach} from './utils';
 
 export const sharedHeaders = {
