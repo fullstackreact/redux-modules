@@ -52,6 +52,7 @@ export class ApiClient {
             this._parseOpt('requestTransforms', options, baseOpts, []);
         let responseTransforms =
             this._parseOpt('responseTransforms', options, baseOpts, [parseJson]);
+        let catchers = this._parseOpt('onError', options, baseOpts, []);
 
         // let requestTransforms = [].concat(reqTransforms);
         // let responseTransforms = [].concat(respTransforms);
@@ -67,7 +68,7 @@ export class ApiClient {
                     .runTransforms(responseTransforms, getState, resp))
             .then(this.debugLog(json => `JSON: ${json}`))
             .then(resolve)
-            .catch(err => reject(err))
+            .catch(err => reject(catchers.length > 0 ? this.runTransforms(catchers, getState, err): err))
         });
       }
     });

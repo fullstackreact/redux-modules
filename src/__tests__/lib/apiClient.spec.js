@@ -234,4 +234,31 @@ describe('ApiClient', () => {
     });
   });
 
+  describe('onError', () => {
+    const generateError = (status, msg={}, options={}) => {
+      return fetchMock.mock(`${BASE_URL}/errcatch`, (reqUrl, reqOpts) => {
+        return {
+          status,
+          body: JSON.stringify(msg)
+        }
+      })
+    }
+
+    it('accept onError option', (done) => {
+      let p = generateError(401, {msg: 'blah'});
+      baseOpts.onError = [(getState, opts) => error =>  {
+        error.someProp = 'processed';
+        return error;
+      }];
+      client = new ApiClient(baseOpts, () => state);
+
+      client.get({path: '/errcatch'})
+        .catch((promise) => {
+          promise.then((error) => {
+            expect(error.someProp).to.equal('processed');
+            done();
+          });
+        })
+    })
+  });
 })
